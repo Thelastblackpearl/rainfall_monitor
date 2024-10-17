@@ -93,8 +93,8 @@ i2cdetect -y 1
 ### 12. Connect and setup battery monitoring
 #### Hardware mapping
 
-* optocoupler connection diagram can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/optocupler conectin.png)
-* optocoupler pinout can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/opto coupler.png)
+* optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/optocupler%20conectin.png)
+* optocoupler pinout can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/opto%20coupler.png)
 
 | pi Physical Pin       | optocoupler | solar charge controlller |
 |-----------------------|-------------|--------------------------|
