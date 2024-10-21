@@ -148,8 +148,8 @@ pip install tensorflow
 pip install PyYAML
 pip install pyserial
 pip install Adafruit-ADS1x15
-sudo apt install i2c-tools
-sudo apt install raspi-config
+sudo apt install -y i2c-tools
+sudo apt install -y raspi-config
 pip install RPi.GPIO
 print_centered_message "INSTALLED DEPENDENCIES"
 progress_bar 20
