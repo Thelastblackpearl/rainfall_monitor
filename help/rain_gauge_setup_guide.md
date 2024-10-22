@@ -45,23 +45,24 @@ chmod a+x setup.sh
 bash setup.sh
 ```
 
-### 7. Check in command line if microphone is detected
+### 7. Check audio recording system
+
+* Check in command line if microphone is detected
 ```bash
 lsusb
 ```
 This will list out all the USB devices connected to Raspberry Pi. To make sure that microphone is getting detected run the above command without connecting microphone and see the output. Repeat the same after connecting the microphone. Now the microphone or soundcard name should appear in the list as an additional entry.
 
-### 8. Check if $arecord$ command lists the input devices
+* Check if $arecord$ command lists the input devices
 ```bash
 arecord -l
 ```
-
-### 9. Reboot the Raspberry Pi
+* Reboot the Raspberry Pi
 ```bash
 sudo reboot
 ```
 
-### 10. After rebooting check if $arecord$ command is working
+### 8. After rebooting check if $arecord$ command is working
 ```bash
 # Records a 5 second test audio as wav file
 arecord --duration=5 sample.wav
@@ -69,7 +70,15 @@ arecord --duration=5 sample.wav
 # Delete the test file
 rm sample.wav
 ```
-### 11. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
+### 9. Enable I2C (for moisture sensor) and UART (for battery monitoring) communication and Reboot
+```bash
+sudo raspi-config
+# interfacing options >> I2C >> yes
+# interfacing options >> serial port >> no >> yes
+sudo reboot
+```
+### 10. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
+
 #### Hardware mapping 
 
 | ADC1115 | Physical Pin                 | Grove Sensor        |
@@ -81,16 +90,11 @@ rm sample.wav
 | ADDR    | GND                          |                     |    
 | A0      |                              | Grove Sensor output |
 
-####  Enable I2C in Raspberry PI and Reboot
-```bash
-sudo raspi-config
-sudo reboot
-```
 ####  Check if I2C device is detected
 ```bash
 i2cdetect -y 1
 ```
-### 12. Connect and setup battery monitoring
+### 11. Connect and setup battery monitoring
 #### Hardware mapping
 
 * optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/optocupler%20conectin.png)
@@ -103,14 +107,8 @@ i2cdetect -y 1
 | 10 (GPIO 15-RX)       | 3           |                          |
 | 39 (GND) via 470ohm R | 3           |                          |
 | 1 (3.3v)              | 4           |                          |
-
-####  Enable UART in Raspberry PI and Reboot
-```bash
-sudo raspi-config
-# interfacing options >> serial >> no >> yes
-sudo reboot
-```   
-### 13. Connect and Setup RFM95 Module to Raspberry Pi 4
+   
+### 12. Connect and Setup RFM95 Module to Raspberry Pi 4
 #### Hardware mapping 
 
 The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
@@ -167,10 +165,10 @@ $ source ~/.bashrc
 $ ttn-abp-send <DevAddr> <Nwkskey> <Appskey> <Rain_mm> <solar_V> <battery_V> <solar_I> <battery_I> <LED_FLAG>
 ```
 
-### 14. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
+### 13. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
 Download these from `API_Keys` folder in `SWSICFOSS`  Google Drive. 
 
-### 15. Edit device details in config file
+### 14. Edit device details in config file
 ```bash
 # open config.yaml
 nano /home/pi/raingauge/code/config/config.yaml
@@ -188,11 +186,11 @@ eg:
 eg:
     field_deployed: false
 ```
-### 16. Add the device to Zerotier account
+### 15. Add the device to Zerotier account
 
 Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
 
-### 17. Setup the python script run automatically after booting 
+### 16. Setup the python script run automatically after booting 
 
 you can do this in many ways
 * Using bashrc
