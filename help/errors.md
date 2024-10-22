@@ -4,6 +4,15 @@
     * try reinstalling OS
     * if make is present in system (installing make)
         https://www.makeuseof.com/how-to-fix-make-command-not-found-error-ubuntu/
+* if there is an error like "error writing to file -write (28:no space left on device)"
+    * check how much space is left on your partitions using command
+        * df -h
+    * check what makes the memory full.
+        * It could be a service spamming the log with errors.check this usinng the command
+            * sudo du -sh /var/log/*
+        * if syslogs is the cause of memory fill.then remove it using the following command
+            * sudo truncate -s 0 /var/log/syslog
+    * then free up some space by removing unnecessary data or packages    
 
 ## PERIPHERALS
 * UART in python and c: https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c
