@@ -96,7 +96,7 @@ i2cdetect -y 1
 * optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/optocupler%20conectin.png)
 * optocoupler pinout can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/opto%20coupler.png)
 
-| pi Physical Pin       | optocoupler | solar charge controlller |
+| Pi physical Pin       | optocoupler | solar charge controlller |
 |-----------------------|-------------|--------------------------|
 |                       | 1           | TX (via 470ohm resistor) |
 |                       | 2           | GND                      |
@@ -192,9 +192,14 @@ eg:
 
 Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
 
-### 17. Add Python scripts to bashrc file  
+### 17. Setup the python script run automatically after booting 
 
+you can do this in many ways
+* Using bashrc
+* Running the script as service
+ 
 ```bash
+#Add Python scripts to bashrc file 
 nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file 

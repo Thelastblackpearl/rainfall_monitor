@@ -12,7 +12,44 @@
             * sudo du -sh /var/log/*
         * if syslogs is the cause of memory fill.then remove it using the following command
             * sudo truncate -s 0 /var/log/syslog
-    * then free up some space by removing unnecessary data or packages    
+    * then free up some space by removing unnecessary data or packages       
+
+### Running the script as service
+
+```bash
+#create the service file
+sudo nano /etc/systemd/system/raingauge.service
+
+# add the following content into raingauge.service and save it
+# change user name and path accordingly
+
+[Unit]
+Description=acoustic raingauge Script Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/raingauge/code/daq_pi.py
+WorkingDirectory=/home/pi/raingauge/code
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
+# use the following commands
+sudo systemctl daemon-reload
+sudo systemctl start raingauge.service
+sudo systemctl enable raingauge.service
+
+# use the commands to see status,stop and start service
+sudo systemctl status raingauge.service
+sudo systemctl stop raingauge.service
+sudo systemctl restart raingauge.service
+
+* if youu are running the log as service log of service can be found at /var/log/journal
+```
 
 ## PERIPHERALS
 * UART in python and c: https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c
@@ -45,5 +82,4 @@ network:
     * Then run ,to know if it is working
 	    * sudo netplan generate
         * sudo netplan apply	
-
 
