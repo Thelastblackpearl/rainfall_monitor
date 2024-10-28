@@ -5,9 +5,9 @@ from os import listdir
 from datetime import datetime, timedelta
 
 
-MECH_FILE_PATH = "/home/icfoss/Downloads/rainpi2_sample/davis_label.csv"
+MECH_FILE_PATH = "/home/icfoss/hari_work/acoustic raingauge/data set/enclosure_3/24-10-24/processed/davis_label.csv"
 
-NON_MECH_PATH = "/home/icfoss/Downloads/rainpi2_sample/new data/"
+NON_MECH_PATH = "/home/icfoss/hari_work/acoustic raingauge/data set/enclosure_3/24-10-24/processed/wav"
 
 mech_data = pd.read_csv(MECH_FILE_PATH)
 mech_data["time"] = pd.to_datetime(mech_data["time"])
@@ -30,12 +30,27 @@ def delete_files(filtered_wavefiles, directory):
 
 def find_files_to_delete(mech_data, wave_files):
     filtered_wavefiles = []
-    for wave_file in wave_files:
-        file_datetime = extract_datetime_from_filename(wave_file)
-        for checkpoint in mech_data["time"]:
+    checkpoint_counter = 0
+    total_audios = 0
+    for checkpoint in mech_data["time"]:
+        checkpoint_counter = checkpoint_counter + 1
+        no_of_audio_samples = 0
+        for wave_file in wave_files:
+            file_datetime = extract_datetime_from_filename(wave_file)
             if checkpoint - timedelta(minutes=3) <= file_datetime <= checkpoint:
                 filtered_wavefiles.append(wave_file)
+                no_of_audio_samples = no_of_audio_samples + 1
+        total_audios = total_audios + no_of_audio_samples
+        print(f"checkpoint {checkpoint_counter} :",checkpoint," & ","no. of audio samples in the checkpoint:",no_of_audio_samples) 
+    print("total audio samples collected:",total_audios)           
+    print("no. of audio samples need to be deleted:",len(list(set(wave_files) - set(filtered_wavefiles))))
     return list(set(wave_files) - set(filtered_wavefiles))
 
 
 delete_files(find_files_to_delete(mech_data, wave_files), NON_MECH_PATH)
+print("deleted unwanted audio files")
+
+# add provision to know total number of audio samples in each checkpoint
+# find checkpoints with 0 audio samples
+# add provision to know total number of audio samples in each checkpoint
+# find checkpoints with 0 audio samples
