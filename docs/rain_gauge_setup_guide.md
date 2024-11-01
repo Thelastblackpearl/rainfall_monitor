@@ -32,17 +32,17 @@ sudo apt upgrade
 sudo reboot
 ```
 
-### 6. Download and run setup.sh for automating environment setup
+### 6. Clone project repository and setup environment
 
 ```bash
-# Download setup.sh
-wget 'https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/src/setup.sh'
+# clone repo
+git clone https://github.com/cksajil/rainfall_monitor.git
 
-# Set executable permission
-chmod a+x setup.sh
+# Set executable permission for setup.sh
+chmod a+x rainfall_monitor/src/setup.sh
 
 # run setup.sh
-bash setup.sh
+bash rainfall_monitor/src/setup.sh
 ```
 
 ### 7. Check audio recording system
