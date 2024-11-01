@@ -24,6 +24,7 @@ progress_bar() {
     printf "\n"  # New line after completion
 }
 
+# message animation
 print_centered_message() {
     local message="$1"
     local padding_char="${2:-#}"  # Padding character (default is #)
@@ -49,6 +50,47 @@ print_centered_message() {
     printf "\r"  # Move to the start of the line
     tput el  # Clear the current line to ensure no residual characters
     printf "\e[${text_color}m%s\e[0m\n" "$line"  # Apply the color to the message and reset it
+}
+
+# setting up folder structure
+create_environment() { 
+    mv rainfall_monitor raingauge
+    mkdir raingauge/model raingauge/data raingauge/logs
+    # rm -r raingauge/docs raingauge/hardware raingauge/README.md raingauge/LICENSE 
+    wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=15rnz_j0QYxJM-4zMHGyLYQMw8a8ndjzs' -O raingauge/model/seq_stft.hdf5
+    # wget --no-check-certificate 'https://drive.google.com/file/d/1-P7dm65AwHHd9gw4DtFe9Bf5Z1nIH1dE/view?usp=drive_link' -O raingauge/model/seq_stft_enc2.hdf5
+    print_centered_message "ENVIRONMENT CREATED"
+    progress_bar 20
+}
+
+install_dependencies() {
+    print_centered_message "INSTALLING DEPENDENCIES"
+    sudo apt-get install -y python3-pip
+    export PATH="$HOME/.local/bin:$PATH" # adding f2py path to system environment variable
+    print_centered_message "/home/pi/.local/bin - PATH ADDED TO ENVIRONMENT VARIABLES"
+    # sudo apt install -y python3.12-venv
+    # python3 -m venv venv
+    # source venv/bin/activate
+    pip install --upgrade pip
+    sudo apt-get install -y pkg-config
+    sudo apt-get install -y libhdf5-dev
+    sudo apt install -y python3-rpi.gpio
+    sudo apt install -y alsa-utils
+    sudo apt install -y pulseaudio
+    sudo apt-get install -y usbutils
+    pip install influxdb-client
+    pip install pandas # numpy will automatically install with pandas
+    pip install librosa
+    pip install keras
+    pip install tensorflow
+    pip install PyYAML
+    pip install pyserial
+    pip install Adafruit-ADS1x15
+    sudo apt install -y i2c-tools
+    sudo apt install -y raspi-config
+    pip install RPi.GPIO
+    print_centered_message "INSTALLED DEPENDENCIES"
+    progress_bar 20  
 }
 
 username="pi"
@@ -109,50 +151,8 @@ Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
 
 print_centered_message "AUTO LOGIN SETUP COMPLETED"
 progress_bar 20
-
-# setting up folder structure and cloning repository
-mkdir raingauge
-mkdir raingauge/model raingauge/data raingauge/logs
-cd raingauge/
-git clone https://github.com/cksajil/rainfall_monitor.git
-mv rainfall_monitor code
-cd code/
-git checkout deployment
-cd ..
-wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=15rnz_j0QYxJM-4zMHGyLYQMw8a8ndjzs' -O model/seq_stft.hdf5
-# wget --no-check-certificate 'https://drive.google.com/file/d/1-P7dm65AwHHd9gw4DtFe9Bf5Z1nIH1dE/view?usp=drive_link' -O model/seq_stft_enc2.hdf5
-
-print_centered_message "ENVIRONMENT CREATED"
-progress_bar 20
-
-#installing dependencies
-print_centered_message "INSTALLING DEPENDENCIES"
-sudo apt-get install -y python3-pip
-export PATH="$HOME/.local/bin:$PATH" # adding f2py path to system environment variable
-echo '****************************************** "/home/pi/.local/bin" PATH ADDED TO ENVIRONMENT VARIABLES ******************************************'
-# sudo apt install -y python3.12-venv
-# python3 -m venv venv
-# source venv/bin/activate
-pip install --upgrade pip
-sudo apt-get install -y pkg-config
-sudo apt-get install -y libhdf5-dev
-sudo apt install -y python3-rpi.gpio
-sudo apt install -y alsa-utils
-sudo apt install -y pulseaudio
-sudo apt-get install -y usbutils
-pip install influxdb-client
-pip install pandas # numpy will automatically install with pandas
-pip install librosa
-pip install keras
-pip install tensorflow
-pip install PyYAML
-pip install pyserial
-pip install Adafruit-ADS1x15
-sudo apt install -y i2c-tools
-sudo apt install -y raspi-config
-pip install RPi.GPIO
-print_centered_message "INSTALLED DEPENDENCIES"
-progress_bar 20
+create_environment
+install_dependencies
 print_centered_message "REBOOTING DEVICE"
 sudo reboot
 
