@@ -36,7 +36,7 @@ sudo reboot
 
 ```bash
 # Download setup.sh
-wget 'https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/setup.sh'
+wget 'https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/src/setup.sh'
 
 # Set executable permission
 chmod a+x setup.sh
@@ -97,8 +97,8 @@ i2cdetect -y 1
 ### 11. Connect and setup battery monitoring
 #### Hardware mapping
 
-* optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/optocupler%20conectin.png)
-* optocoupler pinout can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/images/opto%20coupler.png)
+* optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/images/optocupler%20conectin.png)
+* optocoupler pinout can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/images/opto%20coupler.png)
 
 | Pi physical Pin       | optocoupler | solar charge controlller |
 |-----------------------|-------------|--------------------------|
@@ -111,7 +111,7 @@ i2cdetect -y 1
 ### 12. Connect and Setup RFM95 Module to Raspberry Pi 4
 #### Hardware mapping 
 
-The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
+The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/src/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
 | WiringPi Pin | Function        | Physical Pin    |
 |--------------|-----------------|-----------------|
 | 0            | Reset           | 11              |
@@ -145,7 +145,7 @@ $ ./build
 
 ```bash
 # Access the lmic_rpi folder 
-$ cd /home/pi/raingauge/code/lmic_rpi/examples/ttn-abp-send 
+$ cd /home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send 
 
 # Make the project 
 # This will generate the executable for LoraWAN communication
@@ -155,7 +155,7 @@ $ make
 $ nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file 
-$ export PATH="$PATH:/home/pi/raingauge/code/lmic_rpi/examples/ttn-abp-send"
+$ export PATH="$PATH:/home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send"
 
 # to avoid rebooting after change
 $ source ~/.bashrc
@@ -171,7 +171,7 @@ Download these from `API_Keys` folder in `SWSICFOSS`  Google Drive.
 ### 14. Edit device details in config file
 ```bash
 # open config.yaml
-nano /home/pi/raingauge/code/config/config.yaml
+nano /home/pi/raingauge/src/config/config.yaml
 
 # edit device name based on names in infulxdb or lora key files
 eg: 
@@ -201,7 +201,7 @@ you can do this in many ways
 nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file 
-python3 /home/pi/raingauge/code/daq_pi.py
+python3 /home/pi/raingauge/src/daq_pi.py
 
 # Reboot the device
 sudo reboot

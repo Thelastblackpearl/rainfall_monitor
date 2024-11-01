@@ -28,8 +28,8 @@ Description=acoustic raingauge Script Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/raingauge/code/daq_pi.py
-WorkingDirectory=/home/pi/raingauge/code
+ExecStart=/usr/bin/python3 /home/pi/raingauge/src/daq_pi.py
+WorkingDirectory=/home/pi/raingauge/src
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
