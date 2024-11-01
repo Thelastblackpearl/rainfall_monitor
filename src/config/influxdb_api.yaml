@@ -1,0 +1,17 @@
+url: "http://117.223.185.200:8086"
+org: "icfoss"
+rainpi_1:
+  bucket: "rain_pi_1"
+  token: "NS_OenkrTJBxoes4y6Zrr0OxxUWmLNoXhkKTz4A-hDUvCDozEL5rF3eJhvSeLi-_lxd3cmutHUgRinBNdBE9Dw=="
+rainpi_2:
+  bucket: "rain_pi_2"
+  token: "_zAaS6UAF9QKlihHugfTgjGBUdvuZXVMWvslS0uQtq1cSRWNqyV-jJh22m1PeJJUWLRXN7UelN3CrZpYkZOgCQ=="
+rainpi_3:
+  bucket: "rain_pi_3"
+  token: "stixf_6QbT2-1V9VZ--ZgdwEqtXj2j8RDSsekFuM5kLwNTIj9O3oqmP3Rvfcgg_vT3T2lt7fLYj4RwytpVoFmw=="
+rainpi_test: 
+  bucket: "rain_pi_test"
+  token: "fyATzkUqVjZcRGZhzoT1dHgfUyNUCo3hyAomdYndh-a-YmvNPtzFvtcZ8oDwFB7mb7U8UAYPr8TsR1fkkCFXrg=="
+rainpi_mech:
+  bucket: "rain_pi_mechanical"
+  token: "9HdFicfS1csKOtV2dW3g7MMc-jSyo4hu4bkfyjzK94oIzda9e_zofJzz-yattk4d0Dgq6g1dyK7SiGlG38eMnw=="  
