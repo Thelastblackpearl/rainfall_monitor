@@ -14,6 +14,8 @@
             * sudo truncate -s 0 /var/log/syslog
     * then free up some space by removing unnecessary data or packages       
 
+* add device to zerotier: Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs. 
+
 ### Running the script as service
 
 ```bash
