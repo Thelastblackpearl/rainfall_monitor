@@ -32,36 +32,41 @@ sudo apt upgrade
 sudo reboot
 ```
 
-### 6. Download and run setup.sh for automating environment setup
+### 6. Clone project repository and setup environment
 
 ```bash
-# Download setup.sh
-wget 'https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/setup.sh'
+# clone repo
+git clone https://github.com/cksajil/rainfall_monitor.git
 
-# Set executable permission
-chmod a+x setup.sh
+# Set executable permission for setup.sh
+chmod a+x rainfall_monitor/src/setup.sh
 
 # run setup.sh
-bash setup.sh
+bash rainfall_monitor/src/setup.sh
+
+#note:
+There is an option for zerotier installation during initial setting up or you can do it manually by Following the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
+
 ```
 
-### 7. Check in command line if microphone is detected
+### 7. Check audio recording system
+
+* Check in command line if microphone is detected
 ```bash
 lsusb
 ```
 This will list out all the USB devices connected to Raspberry Pi. To make sure that microphone is getting detected run the above command without connecting microphone and see the output. Repeat the same after connecting the microphone. Now the microphone or soundcard name should appear in the list as an additional entry.
 
-### 8. Check if $arecord$ command lists the input devices
+* Check if $arecord$ command lists the input devices
 ```bash
 arecord -l
 ```
-
-### 9. Reboot the Raspberry Pi
+* Reboot the Raspberry Pi
 ```bash
 sudo reboot
 ```
 
-### 10. After rebooting check if $arecord$ command is working
+### 8. After rebooting check if $arecord$ command is working
 ```bash
 # Records a 5 second test audio as wav file
 arecord --duration=5 sample.wav
@@ -69,7 +74,15 @@ arecord --duration=5 sample.wav
 # Delete the test file
 rm sample.wav
 ```
-### 11. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
+### 9. Enable I2C (for moisture sensor),UART (for battery monitoring) communication and Reboot
+```bash
+sudo raspi-config
+# interfacing options >> I2C >> yes
+# interfacing options >> serial port >> no >> yes
+sudo reboot
+```
+### 10. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
+
 #### Hardware mapping 
 
 | ADC1115 | Physical Pin                 | Grove Sensor        |
@@ -81,39 +94,28 @@ rm sample.wav
 | ADDR    | GND                          |                     |    
 | A0      |                              | Grove Sensor output |
 
-####  Enable I2C in Raspberry PI and Reboot
-```bash
-sudo raspi-config
-sudo reboot
-```
 ####  Check if I2C device is detected
 ```bash
 i2cdetect -y 1
 ```
-### 12. Connect and setup battery monitoring
+### 11. Connect and setup battery monitoring
 #### Hardware mapping
 
-* optocoupler connection diagram can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/optocupler conectin.png)
-* optocoupler pinout can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/opto coupler.png)
+* optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/images/optocupler%20conectin.png)
+* optocoupler pinout can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/images/opto%20coupler.png)
 
-| pi Physical Pin       | optocoupler | solar charge controlller |
+| Pi physical Pin       | optocoupler | solar charge controlller |
 |-----------------------|-------------|--------------------------|
 |                       | 1           | TX (via 470ohm resistor) |
 |                       | 2           | GND                      |
 | 10 (GPIO 15-RX)       | 3           |                          |
 | 39 (GND) via 470ohm R | 3           |                          |
 | 1 (3.3v)              | 4           |                          |
-
-####  Enable UART in Raspberry PI and Reboot
-```bash
-sudo raspi-config
-# interfacing options >> serial >> no >> yes
-sudo reboot
-```   
-### 13. Connect and Setup RFM95 Module to Raspberry Pi 4
+   
+### 12. Connect and Setup RFM95 Module to Raspberry Pi 4
 #### Hardware mapping 
 
-The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
+The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/src/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
 | WiringPi Pin | Function        | Physical Pin    |
 |--------------|-----------------|-----------------|
 | 0            | Reset           | 11              |
@@ -147,7 +149,7 @@ $ ./build
 
 ```bash
 # Access the lmic_rpi folder 
-$ cd /home/pi/raingauge/code/lmic_rpi/examples/ttn-abp-send 
+$ cd /home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send 
 
 # Make the project 
 # This will generate the executable for LoraWAN communication
@@ -157,7 +159,7 @@ $ make
 $ nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file 
-$ export PATH="$PATH:/home/pi/raingauge/code/lmic_rpi/examples/ttn-abp-send"
+$ export PATH="$PATH:/home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send"
 
 # to avoid rebooting after change
 $ source ~/.bashrc
@@ -167,13 +169,13 @@ $ source ~/.bashrc
 $ ttn-abp-send <DevAddr> <Nwkskey> <Appskey> <Rain_mm> <solar_V> <battery_V> <solar_I> <battery_I> <LED_FLAG>
 ```
 
-### 14. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
+### 13. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
 Download these from `API_Keys` folder in `SWSICFOSS`  Google Drive. 
 
-### 15. Edit device details in config file
+### 14. Edit device details in config file
 ```bash
 # open config.yaml
-nano /home/pi/raingauge/code/config/config.yaml
+nano /home/pi/raingauge/src/config/config.yaml
 
 # edit device name based on names in infulxdb or lora key files
 eg: 
@@ -188,17 +190,18 @@ eg:
 eg:
     field_deployed: false
 ```
-### 16. Add the device to Zerotier account
+### 15. Setup the python script run automatically after booting 
 
-Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
-
-### 17. Add Python scripts to bashrc file  
-
+you can do this in many ways
+* Using bashrc
+* Running the script as service
+ 
 ```bash
+#Add Python scripts to bashrc file 
 nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file 
-python3 /home/pi/raingauge/code/daq_pi.py
+python3 /home/pi/raingauge/src/daq_pi.py
 
 # Reboot the device
 sudo reboot

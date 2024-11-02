@@ -4,16 +4,16 @@
 ## Introduction
 Rainfall, also known as precipitation, is crucial for environmental stability. Accurate precipitation monitoring is vital for weather forecasting and creating early flood warning systems. In this project we have developed an acoustic rain gauge that estimates rainfall by using sound as input data.
 
-![Experiment Setup](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/experiment_setup.jpeg)
+![Experiment Setup](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/docs/images/experiment_setup.jpeg)
 
 **Figure 1:** Experiment setup
 
 ## Installation and Setup
-The setup guide can be found [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/help/rain_gauge_setup_guide.md).
+The setup guide can be found [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/rain_gauge_setup_guide.md).
 
 ## Live Data and Visualization
 
-![grafana](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/images/data_visualisation.png)
+![grafana](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/docs/images/data_visualisation.png)
 
 ### [Click here](http://117.223.185.200:3000/d/d6zIvsjIz/rain_pi_2?orgId=3&refresh=1m) to see live data from our acoustic rain gauge
 
@@ -50,8 +50,8 @@ The recorded WAV files are saved with a timestamp (`yyyy_mm_dd_hh_mm_ss_millisec
 If added to the `~/.bashrc` profile, the script will run everytime the device boots up/user logs in/terminal opened. 
 
 ```bash
-nohup home/pi/raingauge/code/daq_pi.py &
-nohup /home/pi/raingauge/code/davis_logger.py &
+nohup home/pi/raingauge/src/daq_pi.py &
+nohup /home/pi/raingauge/src/davis_logger.py &
 ```
 
 OR
@@ -60,7 +60,7 @@ OR
 nano ~/.bashrc
 
 # Appened the following line to the end of .bashrc file
-python3 /home/pi/raingauge/code/daq_pi.py & python3 /home/pi/raingauge/code/davis_logger.py
+python3 /home/pi/raingauge/src/daq_pi.py & python3 /home/pi/raingauge/src/davis_logger.py
 
 # Reboot the device
 sudo reboot

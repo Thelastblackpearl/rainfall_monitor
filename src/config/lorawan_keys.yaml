@@ -1,0 +1,17 @@
+led_flag: 1
+rainpi_1:
+  dev_addr: 
+  nwk_skey: 
+  app_skey:
+rainpi_2:
+  dev_addr: 0071242F
+  nwk_skey: 300E651FB9EE4F09F44FA943E55ECC54
+  app_skey: DADA0BDD0A13EA9320EB01071117BEF9
+rainpi_3:
+  dev_addr: 010844DE
+  nwk_skey: 16F97CF2C03350B2AEDF6E926B9AA4EC
+  app_skey: C3B1EACD8AB90FF891DFBF3B52DD5E34
+rainpi_test:
+  dev_addr: 016A9ADD
+  nwk_skey: 602781A315CBE7807BD2CF22872CF315
+  app_skey: BC6B43BD4DAFDF2B6016AEEE942E040B

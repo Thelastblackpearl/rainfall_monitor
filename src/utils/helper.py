@@ -7,7 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import LSTM, Dense, Reshape, Input
 
 
-def load_config(config_name: str, CONFIG_PATH="/home/pi/raingauge/code/config") -> dict:
+def load_config(config_name: str, CONFIG_PATH="/home/pi/raingauge/src/config") -> dict:
     """
     A function to load and return config file in YAML format
     """
