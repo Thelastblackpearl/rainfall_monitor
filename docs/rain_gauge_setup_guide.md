@@ -43,11 +43,8 @@ chmod a+x rainfall_monitor/src/setup.sh
 
 # run setup.sh
 bash rainfall_monitor/src/setup.sh
-
-#note:
-There is an option for zerotier installation during initial setting up or you can do it manually by Following the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
-
 ```
+* NOTE: There is an option for zerotier installation during initial setting up or you can do it manually by Following the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs.
 
 ### 7. Check audio recording system
 
