@@ -93,66 +93,108 @@ install_dependencies() {
     progress_bar 20  
 }
 
-username="pi"
+install_zerotier(){
 
-# enabling auto login service
-sudo chmod 777 /etc/systemd/logind.conf
-echo "#  This file is part of systemd.
-#
-#  systemd is free software; you can redistribute it and/or modify it under the
-#  terms of the GNU Lesser General Public License as published by the Free
-#  Software Foundation; either version 2.1 of the License, or (at your option)
-#  any later version.
-#
-# Entries in this file show the compile time defaults. Local configuration
-# should be created by either modifying this file, or by creating "drop-ins" in
-# the logind.conf.d/ subdirectory. The latter is generally recommended.
-# Defaults can be restored by simply deleting this file and all drop-ins.
-#
-# Use 'systemd-analyze cat-config systemd/logind.conf' to display the full config.
-#
-# See logind.conf(5) for details.
+    # function to add device to network
+    add_to_network(){
+    read -p "Please enter your zerotier NETWORKID: " NETWORKID # Ask for NETWORKID
+    status=$(sudo zerotier-cli join $NETWORKID) # accept network id here
+    if [[ "$status" == "200 join OK" ]]; then
+        echo "$status"
+        echo "devices joined in network, visit your network and authenticate your device"
+    else
+        echo "$status"
+        add_to_network
+    fi
+    }
 
-[Login]
-NAutoVTs=6
-ReserveVT=6
-#KillUserProcesses=no
-#KillOnlyUsers=
-#KillExcludeUsers=root
-#InhibitDelayMaxSec=5
-#UserStopDelaySec=10
-#HandlePowerKey=poweroff
-#HandleSuspendKey=suspend
-#HandleHibernateKey=hibernate
-#HandleLidSwitch=suspend
-#HandleLidSwitchExternalPower=suspend
-#HandleLidSwitchDocked=ignore
-#HandleRebootKey=reboot
-#PowerKeyIgnoreInhibited=no
-#SuspendKeyIgnoreInhibited=no
-#HibernateKeyIgnoreInhibited=no
-#LidSwitchIgnoreInhibited=yes
-#RebootKeyIgnoreInhibited=no
-#HoldoffTimeoutSec=30s
-#IdleAction=ignore
-#IdleActionSec=30min
-#RuntimeDirectorySize=10%
-#RuntimeDirectoryInodesMax=400k
-#RemoveIPC=yes
-#InhibitorsMax=8192
-#SessionsMax=8192" > /etc/systemd/logind.conf
+    # Prompt the user for input
+    read -p "Do you want to install ZEROTIER? (y/n): " response
 
-sudo mkdir /etc/systemd/system/getty@tty1.service.d/
-sudo chmod 777 /etc/systemd/system/getty@tty1.service.d/
-echo "[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --noissue --autologin $username %I \$TERM
-Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
+    # Convert response to lowercase to handle different cases
+    response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
 
-print_centered_message "AUTO LOGIN SETUP COMPLETED"
-progress_bar 20
+    # Check the response
+    if [[ "$response" == "y" ]]; then
+        echo "installing zerotier..."
+        curl https://raw.githubusercontent.com/zerotier/ZeroTierOne/master/doc/contact%40zerotier.com.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/zerotierone-archive-keyring.gpg >/dev/null
+        RELEASE=$(lsb_release -cs)
+        echo "deb [signed-by=/usr/share/keyrings/zerotierone-archive-keyring.gpg] http://download.zerotier.com/debian/$RELEASE $RELEASE main" | sudo tee /etc/apt/sources.list.d/zerotier.list
+        sudo apt update
+        sudo apt install -y zerotier-one
+        add_to_network
+    elif [[ "$response" == "n" ]]; then
+        echo "Aborting zerotier installation..."
+    else
+        echo "Invalid input. Please enter y/n."
+        install_zerotier # calling the function again to re-prompt
+    fi
+}
+
+auto_login(){
+    # enabling auto login service
+    username="pi"    
+    sudo chmod 777 /etc/systemd/logind.conf
+    echo "#  This file is part of systemd.
+    #
+    #  systemd is free software; you can redistribute it and/or modify it under the
+    #  terms of the GNU Lesser General Public License as published by the Free
+    #  Software Foundation; either version 2.1 of the License, or (at your option)
+    #  any later version.
+    #
+    # Entries in this file show the compile time defaults. Local configuration
+    # should be created by either modifying this file, or by creating "drop-ins" in
+    # the logind.conf.d/ subdirectory. The latter is generally recommended.
+    # Defaults can be restored by simply deleting this file and all drop-ins.
+    #
+    # Use 'systemd-analyze cat-config systemd/logind.conf' to display the full config.
+    #
+    # See logind.conf(5) for details.
+
+    [Login]
+    NAutoVTs=6
+    ReserveVT=6
+    #KillUserProcesses=no
+    #KillOnlyUsers=
+    #KillExcludeUsers=root
+    #InhibitDelayMaxSec=5
+    #UserStopDelaySec=10
+    #HandlePowerKey=poweroff
+    #HandleSuspendKey=suspend
+    #HandleHibernateKey=hibernate
+    #HandleLidSwitch=suspend
+    #HandleLidSwitchExternalPower=suspend
+    #HandleLidSwitchDocked=ignore
+    #HandleRebootKey=reboot
+    #PowerKeyIgnoreInhibited=no
+    #SuspendKeyIgnoreInhibited=no
+    #HibernateKeyIgnoreInhibited=no
+    #LidSwitchIgnoreInhibited=yes
+    #RebootKeyIgnoreInhibited=no
+    #HoldoffTimeoutSec=30s
+    #IdleAction=ignore
+    #IdleActionSec=30min
+    #RuntimeDirectorySize=10%
+    #RuntimeDirectoryInodesMax=400k
+    #RemoveIPC=yes
+    #InhibitorsMax=8192
+    #SessionsMax=8192" > /etc/systemd/logind.conf
+
+    sudo mkdir /etc/systemd/system/getty@tty1.service.d/
+    sudo chmod 777 /etc/systemd/system/getty@tty1.service.d/
+    echo "[Service]
+    ExecStart=
+    ExecStart=-/sbin/agetty --noissue --autologin $username %I \$TERM
+    Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
+    print_centered_message "AUTO LOGIN SETUP COMPLETED"
+    progress_bar 20
+}
+
+
+auto_login
 create_environment
 install_dependencies
+install_zerotier
 print_centered_message "REBOOTING DEVICE"
 sudo reboot
 
@@ -163,6 +205,5 @@ sudo reboot
 # issues
 # how to resolve asking password input when using sudo command?
 # how to install influxdb credentials automatically
-# if we move github repo contain bash script to another directory while executing bash.will that effect execution.(we can solve the issue by moving desired files only)
 # how to automate audio checking functionality
 # make progress bar for each sections.that is progress bar on the bottom side and installation will run in background
