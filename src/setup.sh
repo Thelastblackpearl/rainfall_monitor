@@ -52,6 +52,65 @@ print_centered_message() {
     printf "\e[${text_color}m%s\e[0m\n" "$line"  # Apply the color to the message and reset it
 }
 
+auto_login(){
+    # enabling auto login service
+    username="pi"    
+    sudo chmod 777 /etc/systemd/logind.conf
+    echo "#  This file is part of systemd.
+    #
+    #  systemd is free software; you can redistribute it and/or modify it under the
+    #  terms of the GNU Lesser General Public License as published by the Free
+    #  Software Foundation; either version 2.1 of the License, or (at your option)
+    #  any later version.
+    #
+    # Entries in this file show the compile time defaults. Local configuration
+    # should be created by either modifying this file, or by creating "drop-ins" in
+    # the logind.conf.d/ subdirectory. The latter is generally recommended.
+    # Defaults can be restored by simply deleting this file and all drop-ins.
+    #
+    # Use 'systemd-analyze cat-config systemd/logind.conf' to display the full config.
+    #
+    # See logind.conf(5) for details.
+
+    [Login]
+    NAutoVTs=6
+    ReserveVT=6
+    #KillUserProcesses=no
+    #KillOnlyUsers=
+    #KillExcludeUsers=root
+    #InhibitDelayMaxSec=5
+    #UserStopDelaySec=10
+    #HandlePowerKey=poweroff
+    #HandleSuspendKey=suspend
+    #HandleHibernateKey=hibernate
+    #HandleLidSwitch=suspend
+    #HandleLidSwitchExternalPower=suspend
+    #HandleLidSwitchDocked=ignore
+    #HandleRebootKey=reboot
+    #PowerKeyIgnoreInhibited=no
+    #SuspendKeyIgnoreInhibited=no
+    #HibernateKeyIgnoreInhibited=no
+    #LidSwitchIgnoreInhibited=yes
+    #RebootKeyIgnoreInhibited=no
+    #HoldoffTimeoutSec=30s
+    #IdleAction=ignore
+    #IdleActionSec=30min
+    #RuntimeDirectorySize=10%
+    #RuntimeDirectoryInodesMax=400k
+    #RemoveIPC=yes
+    #InhibitorsMax=8192
+    #SessionsMax=8192" > /etc/systemd/logind.conf
+
+    sudo mkdir /etc/systemd/system/getty@tty1.service.d/
+    sudo chmod 777 /etc/systemd/system/getty@tty1.service.d/
+    echo "[Service]
+    ExecStart=
+    ExecStart=-/sbin/agetty --noissue --autologin $username %I \$TERM
+    Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
+    print_centered_message "AUTO LOGIN SETUP COMPLETED"
+    progress_bar 20
+}
+
 # setting up folder structure
 create_environment() { 
     mv rainfall_monitor raingauge
@@ -131,63 +190,11 @@ install_zerotier(){
     fi
 }
 
-auto_login(){
-    # enabling auto login service
-    username="pi"    
-    sudo chmod 777 /etc/systemd/logind.conf
-    echo "#  This file is part of systemd.
-    #
-    #  systemd is free software; you can redistribute it and/or modify it under the
-    #  terms of the GNU Lesser General Public License as published by the Free
-    #  Software Foundation; either version 2.1 of the License, or (at your option)
-    #  any later version.
-    #
-    # Entries in this file show the compile time defaults. Local configuration
-    # should be created by either modifying this file, or by creating "drop-ins" in
-    # the logind.conf.d/ subdirectory. The latter is generally recommended.
-    # Defaults can be restored by simply deleting this file and all drop-ins.
-    #
-    # Use 'systemd-analyze cat-config systemd/logind.conf' to display the full config.
-    #
-    # See logind.conf(5) for details.
-
-    [Login]
-    NAutoVTs=6
-    ReserveVT=6
-    #KillUserProcesses=no
-    #KillOnlyUsers=
-    #KillExcludeUsers=root
-    #InhibitDelayMaxSec=5
-    #UserStopDelaySec=10
-    #HandlePowerKey=poweroff
-    #HandleSuspendKey=suspend
-    #HandleHibernateKey=hibernate
-    #HandleLidSwitch=suspend
-    #HandleLidSwitchExternalPower=suspend
-    #HandleLidSwitchDocked=ignore
-    #HandleRebootKey=reboot
-    #PowerKeyIgnoreInhibited=no
-    #SuspendKeyIgnoreInhibited=no
-    #HibernateKeyIgnoreInhibited=no
-    #LidSwitchIgnoreInhibited=yes
-    #RebootKeyIgnoreInhibited=no
-    #HoldoffTimeoutSec=30s
-    #IdleAction=ignore
-    #IdleActionSec=30min
-    #RuntimeDirectorySize=10%
-    #RuntimeDirectoryInodesMax=400k
-    #RemoveIPC=yes
-    #InhibitorsMax=8192
-    #SessionsMax=8192" > /etc/systemd/logind.conf
-
-    sudo mkdir /etc/systemd/system/getty@tty1.service.d/
-    sudo chmod 777 /etc/systemd/system/getty@tty1.service.d/
-    echo "[Service]
-    ExecStart=
-    ExecStart=-/sbin/agetty --noissue --autologin $username %I \$TERM
-    Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
-    print_centered_message "AUTO LOGIN SETUP COMPLETED"
-    progress_bar 20
+install_wiringpi(){
+# This library provides GPIO interface for raspberry pi- RFM95 communication
+git clone https://github.com/WiringPi/WiringPi.git
+cd WiringPi
+./build 
 }
 
 
@@ -195,6 +202,7 @@ auto_login
 create_environment
 install_dependencies
 install_zerotier
+install_wiringpi
 print_centered_message "REBOOTING DEVICE"
 sudo reboot
 
