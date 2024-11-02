@@ -11,7 +11,7 @@ infer_inetrval_sec: 180
 infer_model_dir: /home/pi/raingauge/model/
 deployed_model_type: withcnn
 infer_model_withoutcnn: rain_stft.hdf5
-infer_model_withcnn: seq_stft.hdf5
+infer_model_withcnn: seq_stft_enc3.hdf5
 seq_len: 1368000
 csv_file_name: recorded_data_and_estimates.csv
 DB_writing_interval_min: 1 # use multiples of 3 only
