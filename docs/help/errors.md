@@ -14,8 +14,6 @@
             * sudo truncate -s 0 /var/log/syslog
     * then free up some space by removing unnecessary data or packages       
 
-* add device to zerotier: Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs. 
-
 ### Running the script as service
 
 ```bash
@@ -85,3 +83,21 @@ network:
 	    * sudo netplan generate
         * sudo netplan apply	
 
+## INSTALLATION
+### 1. Install the WiringPi library 
+
+The [WiringPi](https://github.com/WiringPi/WiringPi) library provides the Raspberry Pi GPIO interface. Follow the instructions in that repository or do the following.
+
+```bash
+# Clone the repository 
+$ git clone https://github.com/WiringPi/WiringPi.git 
+
+# Access the wiringPi folder 
+$ cd WiringPi 
+
+# Build the library
+$ ./build 
+```
+
+### 2. Add device to zerotier
+Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs. 

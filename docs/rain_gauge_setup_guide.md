@@ -127,21 +127,6 @@ The complete WiringPi pin mapping can be seen [here](https://raw.githubuserconte
 | GND          | GND             | 39              |
 | 3.3V         | +3.3V           | 1               |
 
-#### Install the WiringPi library 
-
-The [WiringPi](https://github.com/WiringPi/WiringPi) library provides the Raspberry Pi GPIO interface. Follow the instructions in that repository or do the following.
-
-```bash
-# Clone the repository 
-$ git clone https://github.com/WiringPi/WiringPi.git 
-
-# Access the wiringPi folder 
-$ cd WiringPi 
-
-# Build the library
-$ ./build 
-```
-
 #### Compile [LoraWANPi](https://github.com/lucasmaziero/lmic-rpi-fox.git) 
 
 ```bash
