@@ -1,31 +1,38 @@
+# directories and logs
 data_dir: /home/pi/raingauge/data/
 log_dir: /home/pi/raingauge/logs/
-log_filename: log.txt
+audio_log_filename: audio_recording_log.txt
+rain_log_filename: estimated_rainfall.csv
+infer_model_dir: /home/pi/raingauge/model/
+# audio recording
 record_hours: 168
 sample_duration_sec: 10
 file_format: "wav"
 resolution: "S32"
 sampling_rate: "8000"
+# model
 stft_shape: [None, 1, 1025, 2672]
 infer_inetrval_sec: 180
-infer_model_dir: /home/pi/raingauge/model/
 deployed_model_type: withcnn
 infer_model_withoutcnn: rain_stft.hdf5
 infer_model_withcnn: seq_stft_enc3.hdf5
 seq_len: 1368000
-csv_file_name: recorded_data_and_estimates.csv
-DB_writing_interval_min: 1 # use multiples of 3 only
+# davis
 davis_log_filename: davis_label.csv
 davis_interrupt_pin: 13
 davis_log_interval_sec: 180
+# rain sensor
 rain_sensor_power_pin: 4
 rain_sensor_input_pin: 17
-communication: LORAWAN # LORAWAN or WIFI
-min_threshold: 0.6
-lora_led_pin: 25
-field_deployed: false
-device_name: rainpi_test
-device_location: greenfield tvm
+# battery monitoring
 uart_port: /dev/ttyS0
 baudrate: 9600
+# general
+device_name: rainpi_test
+device_location: greenfield tvm
+field_deployed: false
+communication: LORAWAN # LORAWAN or WIFI
+DB_writing_interval_min: 1 # use multiples of 3 only
+lora_led_pin: 25
+min_threshold: 0.6
 moisture_threshold: 16000

@@ -35,10 +35,10 @@ def record_audio(file_path, duration, file_format, resolution, sampling_rate):
     )
 
 
-def initialize_logging(log_dir, log_filename, start_time, total_samples):
+def initialize_logging(log_dir, audio_log_filename, start_time, total_samples):
     create_folder(log_dir)
     logging.basicConfig(
-        filename=path.join(log_dir, log_filename),
+        filename=path.join(log_dir, audio_log_filename),
         filemode="a+",
         format="%(message)s",
     )
@@ -59,9 +59,9 @@ def log_time_remaining(logger, end_time):
     logger.info(log_message)
 
 
-def write_rain_data_to_csv(result_data, log_dir, csv_filename):
+def write_rain_data_to_csv(result_data, log_dir, rain_log_filename):
     result_df = pd.DataFrame(result_data)
-    result_df.to_csv(path.join(log_dir, csv_filename), index=False)
+    result_df.to_csv(path.join(log_dir, rain_log_filename), index=False)
 
 
 def send_data(config, mm_hat, solar_V, battery_V, solar_I, battery_I):
@@ -157,7 +157,7 @@ def main():
         else:
             logger = initialize_logging(
                 config["log_dir"],
-                config["log_filename"],
+                config["audio_log_filename"],
                 datetime.now(),
                 int(record_hours * (3600 / wav_duration)),
             )
@@ -189,7 +189,7 @@ def main():
                         }
                     )
                     write_rain_data_to_csv(
-                        result_data, config["log_dir"], config["csv_file_name"]
+                        result_data, config["log_dir"], config["rain_log_filename"]
                     )
                     rain += mm_hat
                     db_counter += 1
