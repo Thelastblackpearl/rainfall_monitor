@@ -8,7 +8,6 @@ from utils.estimate import estimate_rainfall
 from utils.connectivity import send_data_via_internet, send_data_via_lorawan
 from plugins.battery_monitor import setup_serial_connection, preprocess_dataframe
 from plugins.moisture_sensor import read_moisture_sensor
-# from plugins.rain_sensor import read_loop, disable_rain_sensor
 from utils.helper import (
     time_stamp_fnamer,
     load_config,
@@ -135,9 +134,6 @@ def main():
                     rain += mm_hat
                     db_counter += 1
 
-                    # raeding rain_sensor_status
-                    # rain_sensor_status = read_loop()
-
                     # reading moisture sensor
                     moisture = read_moisture_sensor(channel=0, gain=1)
 
@@ -179,7 +175,6 @@ def main():
                     mm_hat = estimate_rainfall(infer_model, locations)
                     # logger.info("Estimated rainfall: ", mm_hat)
                     locations.clear()
-                    # rain_sensor_status = read_loop()
                     moisture = read_moisture_sensor(channel=0, gain=1) # reading moisture sensor
                     result_data.append(
                         {
@@ -213,8 +208,6 @@ def main():
         print("Execution interrupted by user")
     finally:
         pass
-        # disable_rain_sensor()
-        # gpio_cleanup()
 
 
 if __name__ == "__main__":
