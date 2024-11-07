@@ -50,7 +50,9 @@ def find_files_to_delete(mech_data, wave_files):
 delete_files(find_files_to_delete(mech_data, wave_files), NON_MECH_PATH)
 print("deleted unwanted audio files")
 
-# add provision to know total number of audio samples in each checkpoint
+# added provision to know total number of audio samples in each checkpoint
 # find checkpoints with 0 audio samples
-# add provision to know total number of audio samples in each checkpoint
-# find checkpoints with 0 audio samples
+# in sajilcks version iteration was done based on wav file name.
+#   ie,take one wav file and extract date time from it.then iterate through all time data ponits in manually processed mechanical rain gauge data(csv)
+#   if a the wav file is belongs to some time data points,add it to a list
+
