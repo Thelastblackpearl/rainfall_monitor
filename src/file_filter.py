@@ -4,9 +4,11 @@ import os
 import math
 from datetime import datetime, timedelta
 from os import listdir
+import shutil
+from typing import List
 
 
-def extract_datetime_from_filename(filename: str) -> datetime:
+def extract_timestamp_from_filename(filename: str) -> datetime:
     """
     extract time stamp from audio file name  
     """
@@ -17,16 +19,28 @@ def create_folder(dir: str, folder_name: str) -> str:
     """
     Function to create a folder in a location if it does not exist
     """
-    folder = dir + "/" + folder_name
+    folder = os.path.join(dir, folder_name)
     if not os.path.exists(folder):
         os.makedirs(folder)
     return folder 
+
+def clean_directory(dir: str) -> None:
+    """
+    Delete all audio files to avoid issues from random sampling of zero data points, 
+    as running the code multiple times on same data set and directory may leave unnecessary files.
+    """
+    count = 0
+    for filename in os.listdir(dir):
+        file_path = os.path.join(dir, filename)
+        os.remove(file_path)
+        count += 1
+    print(f"Deleted audio files from previous session: {count}")
 
 def generate_csv(output_dir: str, filename: str, header: list[str], data: list[list[str]]) -> None:
     """
     create a csv file using input data
     """
-    path = output_dir + "/" + filename
+    path = os.path.join(output_dir,filename)
     with open(path, mode="w", newline="") as newcsv:
         writer = csv.writer(newcsv)
         
@@ -38,25 +52,57 @@ def generate_csv(output_dir: str, filename: str, header: list[str], data: list[l
             writer.writerow(row)
             #print(f"Appended row: {row[0]}, {row[1]}")
 
-def find_audio_samples(wav_files: list[str], csv_data: list[list[str]]) -> list[str]:
+def check_sample_numbers(wav_files: list[str], row: list[str]) -> bool:
     """
-    collect all audio samples corresponding to all data points in input csv
+    check no.of samples in a specific time frame
+    """
+    audios = [] # temporary list for storing wavs of each time data
+    time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S.%f") # convert timestamp date type (str to datetime.datetime)
+    for wav_file in wav_files:
+        file_datetime = extract_timestamp_from_filename(wav_file)
+        if time - timedelta(minutes=3) <= file_datetime <= time:
+            audios.append(wav_file) #append wav file to temp list
+    if len(audios) >= 17:
+        # print(f"{row} sufficient data points = {len(audios)}")
+        return True
+    else:
+        print(f"{row} insufficient no.of audio samples,{len(audios)} only: discarding data point")
+        return False
+    
+def collect_audio_samples(wav_files: list[str], csv_data: list[list[str]]) -> list[str]:
+    """
+    create a list of audio samples corresponding to the time check points in input data 
     """
     audios = []
     for row in csv_data:
         time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S.%f") # convert timestamp date type (str to datetime.datetime)
         for wav in wav_files:
-            file_datetime = extract_datetime_from_filename(wav)
+            file_datetime = extract_timestamp_from_filename(wav)
             if time - timedelta(minutes=3) <= file_datetime <= time:
                 audios.append(wav) #append wav file to temp list
     return audios
 
-def copy_audios(audios : list[str], dir: str) -> None: # add doc string
+def copy_audios(audios : list[str], source_dir: str, destination_dir: str) -> None: # add doc string
     """
-    copy audio files to a location
+    copy audio files to a specific directory
     """
-    # need to write code
-    print("moving audios")
+    # create wav folder with in destination dir for audio
+    destination_dir = create_folder(destination_dir,"wav")
+
+    clean_directory(destination_dir) # clean wav directory before copying
+    
+    for audio in audios:
+        source_path = os.path.join(source_dir, audio)
+
+        # Copy the file to the destination
+        try:
+            shutil.copy2(source_path, destination_dir) # preserve metadata of file
+            # print(f"Copied '{audio}' to {destination_dir}")
+        except FileNotFoundError:
+            print(f"File '{audio}' not found in source directory.")
+        except Exception as e:
+            print(f"Error copying '{audio}': {e}")
+    print("copying completed")        
 
 def false_data_filter(data: list[list[str]]) -> list[list[str]]:
     """
@@ -76,24 +122,7 @@ def false_data_filter(data: list[list[str]]) -> list[list[str]]:
             else:
                 data.append(item)
     return process_data
-
-def check_sample_numbers(wav_files: list[str], row: list[str]) -> bool:
-    """
-    check no.of samples in a specific time frame
-    """
-    audios = [] # temporary list for storing wavs of each time data
-    time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S.%f") # convert timestamp date type (str to datetime.datetime)
-    for wav_file in wav_files:
-        file_datetime = extract_datetime_from_filename(wav_file)
-        if time - timedelta(minutes=3) <= file_datetime <= time:
-            audios.append(wav_file) #append wav file to temp list
-    if len(audios) >= 17:
-        # print(f"{row} sufficient data points = {len(audios)}")
-        return True
-    else:
-        print(f"{row} insufficient no.of audio samples,{len(audios)} only: discarding data point")
-        return False
-    
+  
 def process_data(input_file: str, wav_files: list[str]) -> tuple[list[str],list[list[str]]]:
     zero_rain_rows = [] 
     non_zero_rain_rows = []
@@ -135,7 +164,7 @@ def process_data(input_file: str, wav_files: list[str]) -> tuple[list[str],list[
     # Combine zero and non-zero rows and sort them by time
     processed_data = zero_rain_sample + non_zero_rain_rows  # data structure: list of lists
     processed_data.sort(key=lambda row: row[0])  # Sort by time column (assumes time is in row[0])
-    processed_data = false_data_filter(processed_data) # delete false interrupt data 
+    #processed_data = false_data_filter(processed_data) # delete false interrupt data 
 
     print("input details")
     print(f"input csv contain {zero_row_count + non_zero_row_count} data points: zero data points = {zero_row_count} & non-zero data points = {non_zero_row_count}")
@@ -150,18 +179,19 @@ def main():
     input_audios = "/home/icfoss/hari_work/acoustic raingauge/data set/test/04-11-24/raw/wav"
     
     #outputs
-    output_dir = "/home/icfoss/hari_work/acoustic raingauge/data set/test/04-11-24/raw" # dont use last /
+    output_dir = "/home/icfoss/hari_work/acoustic raingauge/data set/test/04-11-24" # dont use last /
     new_csv_filename = "filtered_rain.csv"
     
     data_dir = create_folder(output_dir,"processed data")
-    audio_dir = create_folder(data_dir,"wav")
     wav_files = sorted(listdir(input_audios)) # wav_files datatype list[str]
     csv_header, csv_data = process_data(input_mech,wav_files)
     generate_csv(data_dir,new_csv_filename,csv_header,csv_data)
-    audios = find_audio_samples(wav_files,csv_data) # audios datatype list[str]
-    copy_audios(audios, audio_dir)
+    audios = collect_audio_samples(wav_files,csv_data) # audios datatype list[str]
+    copy_audios(audios,input_audios, data_dir)
     print("output")
     print(f"total mech data ponits: {len(csv_data)} & total audio files: {len(audios)}")
+
+
 
 
 if __name__ == "__main__":
@@ -173,3 +203,10 @@ if __name__ == "__main__":
     #   error false value filtering 
     #   error in timestamp format 
 # use standard name for variables,type hinting,documentation
+# it is found that there is change in no.of audio files copying to new location
+    # this might be happening because, we are selecting random zero datapoint samples
+    # since no.of samples in each point can be 17 or 18 
+
+# Potential issue: 
+# random zero sampling could cause errors in audio file copying.
+    # Running the code multiple times on the same inputs may leave behind unnecessary audio files from previous execution.
