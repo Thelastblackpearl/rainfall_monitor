@@ -6,14 +6,14 @@ from datetime import datetime, timedelta
 from os import listdir
 
 
-def extract_datetime_from_filename(filename):
+def extract_datetime_from_filename(filename: str) -> datetime:
     """
     extract time stamp from audio file name  
     """
     timestamp_str = filename.split(".")[0]
     return datetime.strptime(timestamp_str, "%Y_%m_%d_%H_%M_%S_%f")
 
-def create_folder(dir,folder_name: str) -> str:
+def create_folder(dir: str, folder_name: str) -> str:
     """
     Function to create a folder in a location if it does not exist
     """
@@ -22,7 +22,7 @@ def create_folder(dir,folder_name: str) -> str:
         os.makedirs(folder)
     return folder 
 
-def create_csv(output_dir,filename,header,data):
+def generate_csv(output_dir: str, filename: str, header: list[str], data: list[list[str]]) -> None:
     """
     create a csv file using input data
     """
@@ -33,12 +33,12 @@ def create_csv(output_dir,filename,header,data):
         # Write the header
         writer.writerow(header)
         
-        # Write the sorted combined data
+        # Write data
         for row in data:
             writer.writerow(row)
             #print(f"Appended row: {row[0]}, {row[1]}")
 
-def find_audio_samples(wav_files,csv_data):
+def find_audio_samples(wav_files: list[str], csv_data: list[list[str]]) -> list[str]:
     """
     collect all audio samples corresponding to all data points in input csv
     """
@@ -51,14 +51,14 @@ def find_audio_samples(wav_files,csv_data):
                 audios.append(wav) #append wav file to temp list
     return audios
 
-def copy_audios(audios : list,dir: str):
+def copy_audios(audios : list[str], dir: str) -> None: # add doc string
     """
     copy audio files to a location
     """
     # need to write code
     print("moving audios")
 
-def false_data_filter(data):
+def false_data_filter(data: list[list[str]]) -> list[list[str]]:
     """
     remove false data from mech.raingauge between 5.55 am to 6.05 am
     """
@@ -77,7 +77,7 @@ def false_data_filter(data):
                 data.append(item)
     return process_data
 
-def check_sample_numbers(wav_files,row):
+def check_sample_numbers(wav_files: list[str], row: list[str]) -> bool:
     """
     check no.of samples in a specific time frame
     """
@@ -94,7 +94,7 @@ def check_sample_numbers(wav_files,row):
         print(f"{row} insufficient no.of audio samples,{len(audios)} only: discarding data point")
         return False
     
-def process_data(input_file,wav_files):
+def process_data(input_file: str, wav_files: list[str]) -> tuple[list[str],list[list[str]]]:
     zero_rain_rows = [] 
     non_zero_rain_rows = []
     non_zero_row_count = 0
@@ -155,10 +155,10 @@ def main():
     
     data_dir = create_folder(output_dir,"processed data")
     audio_dir = create_folder(data_dir,"wav")
-    wav_files = sorted(listdir(input_audios))
+    wav_files = sorted(listdir(input_audios)) # wav_files datatype list[str]
     csv_header, csv_data = process_data(input_mech,wav_files)
-    create_csv(data_dir,new_csv_filename,csv_header,csv_data)
-    audios = find_audio_samples(wav_files,csv_data)
+    generate_csv(data_dir,new_csv_filename,csv_header,csv_data)
+    audios = find_audio_samples(wav_files,csv_data) # audios datatype list[str]
     copy_audios(audios, audio_dir)
     print("output")
     print(f"total mech data ponits: {len(csv_data)} & total audio files: {len(audios)}")
@@ -169,6 +169,7 @@ if __name__ == "__main__":
 
 
 # todo
-# add provision to remove false mech between 5.55 am to 6.05 am
-# error false value filtering 
-# error in timestamp format
+# add provision to remove false mech between 5.55 am to 6.05 am (false value filtering)
+    #   error false value filtering 
+    #   error in timestamp format 
+# use standard name for variables,type hinting,documentation
