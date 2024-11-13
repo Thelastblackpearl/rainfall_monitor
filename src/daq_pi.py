@@ -8,7 +8,6 @@ from utils.estimate import estimate_rainfall
 from utils.connectivity import send_data_via_internet, send_data_via_lorawan
 from plugins.battery_monitor import setup_serial_connection, preprocess_dataframe
 from plugins.moisture_sensor import read_moisture_sensor
-# from plugins.rain_sensor import read_loop, disable_rain_sensor
 from utils.helper import (
     time_stamp_fnamer,
     load_config,
@@ -35,10 +34,10 @@ def record_audio(file_path, duration, file_format, resolution, sampling_rate):
     )
 
 
-def initialize_logging(log_dir, log_filename, start_time, total_samples):
+def initialize_logging(log_dir, audio_log_filename, start_time, total_samples):
     create_folder(log_dir)
     logging.basicConfig(
-        filename=path.join(log_dir, log_filename),
+        filename=path.join(log_dir, audio_log_filename),
         filemode="a+",
         format="%(message)s",
     )
@@ -59,9 +58,9 @@ def log_time_remaining(logger, end_time):
     logger.info(log_message)
 
 
-def write_rain_data_to_csv(result_data, log_dir, csv_filename):
+def write_rain_data_to_csv(result_data, log_dir, rain_log_filename):
     result_df = pd.DataFrame(result_data)
-    result_df.to_csv(path.join(log_dir, csv_filename), index=False)
+    result_df.to_csv(path.join(log_dir, rain_log_filename), index=False)
 
 
 def send_data(config, mm_hat, solar_V, battery_V, solar_I, battery_I):
@@ -135,9 +134,6 @@ def main():
                     rain += mm_hat
                     db_counter += 1
 
-                    # raeding rain_sensor_status
-                    # rain_sensor_status = read_loop()
-
                     # reading moisture sensor
                     moisture = read_moisture_sensor(channel=0, gain=1)
 
@@ -157,7 +153,7 @@ def main():
         else:
             logger = initialize_logging(
                 config["log_dir"],
-                config["log_filename"],
+                config["audio_log_filename"],
                 datetime.now(),
                 int(record_hours * (3600 / wav_duration)),
             )
@@ -179,7 +175,6 @@ def main():
                     mm_hat = estimate_rainfall(infer_model, locations)
                     # logger.info("Estimated rainfall: ", mm_hat)
                     locations.clear()
-                    # rain_sensor_status = read_loop()
                     moisture = read_moisture_sensor(channel=0, gain=1) # reading moisture sensor
                     result_data.append(
                         {
@@ -189,7 +184,7 @@ def main():
                         }
                     )
                     write_rain_data_to_csv(
-                        result_data, config["log_dir"], config["csv_file_name"]
+                        result_data, config["log_dir"], config["rain_log_filename"]
                     )
                     rain += mm_hat
                     db_counter += 1
@@ -213,8 +208,6 @@ def main():
         print("Execution interrupted by user")
     finally:
         pass
-        # disable_rain_sensor()
-        # gpio_cleanup()
 
 
 if __name__ == "__main__":
