@@ -13,7 +13,7 @@
 ### 2. Enable SSH Settings, give user credentials and WiFi credentials
 ![screenshot_2](images/screenshot_2.png)
 ![screenshot_3](images/screenshot_3.png)
-![screenshot_4](images/screenshot_4_n.png)
+![screenshot_4](images/screenshot_4.png)
 
 ### 3. Flash the operating system and boot the Raspberry Pi
 
