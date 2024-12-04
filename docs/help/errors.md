@@ -14,43 +14,6 @@
             * sudo truncate -s 0 /var/log/syslog
     * then free up some space by removing unnecessary data or packages       
 
-### Running the script as service
-
-```bash
-#create the service file
-sudo nano /etc/systemd/system/raingauge.service
-
-# add the following content into raingauge.service and save it
-# change user name and path accordingly
-
-[Unit]
-Description=acoustic raingauge Script Service
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/python3 /home/pi/raingauge/src/daq_pi.py
-WorkingDirectory=/home/pi/raingauge/src
-StandardOutput=inherit
-StandardError=inherit
-Restart=always
-User=pi
-
-[Install]
-WantedBy=multi-user.target
-
-# use the following commands
-sudo systemctl daemon-reload
-sudo systemctl start raingauge.service
-sudo systemctl enable raingauge.service
-
-# use the commands to see status,stop and start service
-sudo systemctl status raingauge.service
-sudo systemctl stop raingauge.service
-sudo systemctl restart raingauge.service
-
-* if youu are running the log as service log of service can be found at /var/log/journal
-```
-
 ## PERIPHERALS
 * UART in python and c: https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c
 * Enabling UART for battery monitoring: https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c        
@@ -101,3 +64,52 @@ $ ./build
 
 ### 2. Add device to zerotier
 Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs. 
+
+## RUN A SCRIPT ON STARTUP IN LINUX
+how to run a script on startup in Linux : https://www.tutorialspoint.com/run-a-script-on-startup-in-linux
+### Running the script as service
+
+```bash
+#create the service file
+sudo nano /etc/systemd/system/raingauge.service
+
+# add the following content into raingauge.service and save it
+# change user name and path accordingly
+
+[Unit]
+Description=acoustic raingauge Script Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/raingauge/src/daq_pi.py
+WorkingDirectory=/home/pi/raingauge/src
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=3
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
+# use the following commands
+sudo systemctl daemon-reload # Reload the systemd manager configuration to recognize the new service
+sudo systemctl enable raingauge.service # Enable the service
+sudo systemctl start raingauge.service # Start the service
+
+
+# use the commands to see status,stop and start service
+sudo systemctl status raingauge.service
+sudo systemctl stop raingauge.service
+sudo systemctl restart raingauge.service
+
+* if youu are running the log as service log of service can be found at /var/log/journal
+```
+Explanation of the added fields:
+
+    * Restart=on-failure: The service will attempt to restart only if it exits with a failure status.
+    * RestartSec=5: Sets a delay of 5 seconds before each restart attempt.
+    * StartLimitIntervalSec=60: Sets a 60-second window to control the restart behavior.
+    * StartLimitBurst=3: Allows up to 3 restart attempts within the StartLimitIntervalSec window.
