@@ -1,5 +1,5 @@
 # Ignore Mac system files
-.DS_store
+*.DS_store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -8,6 +8,7 @@ __pycache__/
 
 # Executables
 # ttn-abp-send
+
 
 # Ignore virtual environment
 venv/
