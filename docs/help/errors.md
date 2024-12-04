@@ -95,9 +95,10 @@ User=pi
 WantedBy=multi-user.target
 
 # use the following commands
-sudo systemctl daemon-reload
-sudo systemctl start raingauge.service
-sudo systemctl enable raingauge.service
+sudo systemctl daemon-reload # Reload the systemd manager configuration to recognize the new service
+sudo systemctl enable raingauge.service # Enable the service
+sudo systemctl start raingauge.service # Start the service
+
 
 # use the commands to see status,stop and start service
 sudo systemctl status raingauge.service
