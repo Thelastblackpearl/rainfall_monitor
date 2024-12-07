@@ -186,4 +186,7 @@ if __name__ == "__main__":
 # change input and output directories as per needs
 # random zero sampling could cause errors in audio file copying.
     # Running the code multiple times on the same inputs may leave behind unnecessary audio files from previous execution.
-# total no.of audio files in output may vary from 17*total no.of data points to 18*total no.of data points
+    # total no.of audio files in output may vary from 17*total no.of mech data points to 18*total no.of mech data points
+# why we are getting only 17 or 16 samples in some cases,
+    # this is happening because some audio files are partially inside a perticular mech data timeframe and some are partially outside.
+    # also it is found that some delay(in seconds) in audio recording this may also affect the number of samples in a time frame

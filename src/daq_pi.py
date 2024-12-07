@@ -101,7 +101,7 @@ def main():
 
     try:
         if field_deployed:
-            i = 1 # recording sample number
+            i = 1 # audio sample number
             while True:
                 dt_now = datetime.now()
                 print(f"Recording sample number {i} on {dt_now}")
@@ -116,8 +116,8 @@ def main():
                 )
                 locations.append(location)
 
-                if i % num_subsamples == 0: # estimating rainfall
-                    mm_hat = estimate_rainfall(infer_model, locations)
+                if i % num_subsamples == 0: # if (infer_inetrval // wav_duration) audio subsamples are collected
+                    mm_hat = estimate_rainfall(infer_model, locations) # estimating rainfall
                     print("Estimated rainfall: ", mm_hat)
 
                     files_and_directories = listdir(config["data_dir"])
