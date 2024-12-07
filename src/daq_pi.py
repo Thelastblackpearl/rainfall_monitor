@@ -101,7 +101,7 @@ def main():
 
     try:
         if field_deployed:
-            i = 1
+            i = 1 # recording sample number
             while True:
                 dt_now = datetime.now()
                 print(f"Recording sample number {i} on {dt_now}")
