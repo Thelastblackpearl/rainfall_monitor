@@ -76,23 +76,23 @@ sudo nano /etc/systemd/system/raingauge.service
 # add the following content into raingauge.service and save it
 # change user name and path accordingly
 
-[Unit]
-Description=acoustic raingauge Script Service
-After=network.target
+    [Unit]
+    Description=acoustic raingauge Script Service
+    After=network.target
 
-[Service]
-ExecStart=/usr/bin/python3 /home/pi/raingauge/src/daq_pi.py
-WorkingDirectory=/home/pi/raingauge/src
-StandardOutput=inherit
-StandardError=inherit
-Restart=on-failure
-RestartSec=5
-StartLimitIntervalSec=60
-StartLimitBurst=3
-User=pi
+    [Service]
+    ExecStart=/usr/bin/python3 /home/pi/raingauge/src/daq_pi.py
+    WorkingDirectory=/home/pi/raingauge/src
+    StandardOutput=inherit
+    StandardError=inherit
+    Restart=on-failure
+    RestartSec=5
+    StartLimitIntervalSec=60
+    StartLimitBurst=3
+    User=pi
 
-[Install]
-WantedBy=multi-user.target
+    [Install]
+    WantedBy=multi-user.target
 
 # use the following commands
 sudo systemctl daemon-reload # Reload the systemd manager configuration to recognize the new service
@@ -106,6 +106,9 @@ sudo systemctl stop raingauge.service
 sudo systemctl restart raingauge.service
 
 * if youu are running the log as service log of service can be found at /var/log/journal
+
+journalctl -u raingauge.service
+
 ```
 Explanation of the added fields:
 
