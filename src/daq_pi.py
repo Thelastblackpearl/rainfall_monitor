@@ -82,18 +82,9 @@ def main():
     end_time = datetime.now() + timedelta(hours=record_hours)
     min_threshold = config["min_threshold"]
     moisture_threshold = config["moisture_threshold"]
-    infer_model_path = path.join(
-        config["infer_model_dir"],
-        (
-            config["infer_model_withcnn"]
-            if config["deployed_model_type"] == "withcnn"
-            else config["infer_model_withoutcnn"]
-        ),
-    )
-
+    infer_model_path = path.join(config["infer_model_dir"],config["infer_model_name"])
     infer_model = load_estimate_model(infer_model_path)
     locations = []
-
     # serial commuication setup for battery monitoring
     port = config["uart_port"]
     baudrate = config["baudrate"]
@@ -105,8 +96,8 @@ def main():
             while True:
                 dt_now = datetime.now()
                 print(f"Recording sample number {i} on {dt_now}")
-                dt_fname = time_stamp_fnamer(dt_now) + ".wav"
-                location = path.join(config["data_dir"], dt_fname)
+                audio_fname = time_stamp_fnamer(dt_now) + ".wav"
+                location = path.join(config["data_dir"], audio_fname)
                 record_audio(
                     location,
                     wav_duration,
@@ -116,7 +107,7 @@ def main():
                 )
                 locations.append(location)
 
-                if i % num_subsamples == 0: # if (infer_inetrval // wav_duration) audio subsamples are collected
+                if i % num_subsamples == 0: # if (infer_inetrval // wav_duration) no of audio subsamples are collected
                     mm_hat = estimate_rainfall(infer_model, locations) # estimating rainfall
                     print("Estimated rainfall: ", mm_hat)
 
@@ -159,8 +150,8 @@ def main():
             for i in range(1, int(record_hours * (3600 / wav_duration)) + 1):
                 dt_now = datetime.now()
                 logger.info(f"Recording sample number {i} on {dt_now}")
-                dt_fname = time_stamp_fnamer(dt_now) + ".wav"
-                location = path.join(config["data_dir"], dt_fname)
+                audio_fname = time_stamp_fnamer(dt_now) + ".wav"
+                location = path.join(config["data_dir"], audio_fname)
                 record_audio(
                     location,
                     wav_duration,
