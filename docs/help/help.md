@@ -13,6 +13,13 @@
         * if syslogs is the cause of memory fill.then remove it using the following command
             * sudo truncate -s 0 /var/log/syslog
     * then free up some space by removing unnecessary data or packages       
+* Raspberry Pi 4 Model B uses BCM2711 Broadcom chip
+    * Processor: Quad-core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5 GHz.
+
+    * Memory: Accesses up to 8GB LPDDR4-2400 SDRAM (depending on model)
+
+    * Caches: 32kB data + 48kB instruction L1 cache per core. 1MB L2 cache.
+    * [BCM2711 datasheet](BCM2711-datasheet.pdf)
 
 ## PERIPHERALS
 * UART in python and c: https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c
