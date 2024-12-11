@@ -76,4 +76,4 @@ Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylife
 
 ### Run the script as service
 * how to run a script on startup in Linux : https://www.tutorialspoint.com/run-a-script-on-startup-in-linux
-* [another link](src="help/service in liniux.nd")
+* [another link](service_in_linux.md)
