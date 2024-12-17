@@ -120,4 +120,5 @@ PROBLEMS
 * Standard output is not being written to raingauge_output.log.
 * Default log storage in /var/log/* could consume significant memory; avoid restarting the script on failure to prevent excessive logging.
 * If logs fill up the memory, determine how to delete them or automatically limit the log file size.
+* all the setup is working in my pc ,but not working in pi,there is some errors with audio recording
 
