@@ -139,7 +139,7 @@ def process_data(input_file: str, wav_files: list[str]) -> tuple[list[str],list[
                     non_zero_rain_rows.append(row)
                                                
     # Calculate 10% of total non-zero rain data points
-    zero_to_append_count = math.ceil(0.10 * non_zero_row_count) # round up to nearest possible integer
+    zero_to_append_count = math.ceil(0.20 * non_zero_row_count) # round up to nearest possible integer
 
     # Select a random sample of zero rain data points to append
     if len(zero_rain_rows) >= zero_to_append_count:
