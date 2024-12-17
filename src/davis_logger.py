@@ -1,4 +1,4 @@
-import pandas as pd
+import csv
 from os import path
 import RPi.GPIO as GPIO
 from datetime import datetime
@@ -9,19 +9,14 @@ from requests.exceptions import ConnectionError
 
 dt_start = datetime.now()
 config = load_config("config.yaml")
-labels_df = pd.DataFrame(columns=["time", "rainfall"])
-session_dir = time_stamp_fnamer(dt_start)
-label_dir = path.join(config["log_dir"], session_dir)
-
-create_folder(label_dir)
-BUCKET_SIZE = 0.2
-count = 0
-log_count = 0
+session_dir = path.join(config["log_dir"], time_stamp_fnamer(dt_start))
+create_folder(session_dir)
 interrupt_pin = config["davis_interrupt_pin"]
 logging_interval = config["davis_log_interval_sec"]
+count = 0
 
 
-def reset_rainfall():
+def reset_count():
     global count
     count = 0
 
@@ -31,7 +26,7 @@ def bucket_tipped(interrupt_pin):
     global count
     count += 1
     if count > 50:
-        reset_rainfall()
+        reset_count()
 
 
 def influxdb(rain: float):
@@ -64,25 +59,43 @@ def influxdb(rain: float):
         return False
 
 
-def saving_data(label_dir, dt_now):
-    rainfall = count * BUCKET_SIZE
+def save_csv(data: list[str]) -> None:
+    """
+    Append data to a CSV file. If the file does not exist, create it with a header.
+    """
+    csv_path = path.join(session_dir, config["davis_log_filename"])
+    
+    # Check if the file already exists
+    file_exists = path.isfile(csv_path)
+    
+    with open(csv_path, mode="a", newline="") as newcsv:
+        writer = csv.writer(newcsv)
+        if not file_exists:
+            writer.writerow(["time", "rainfall"])
+        writer.writerow(data)
+
+
+def calculate_rainfall(time_stamp):
+    bucket_size = 0.2
+    rainfall = count * bucket_size
+    data = [time_stamp, rainfall]
     influxdb(rainfall)
-    labels_df.loc[len(labels_df)] = (dt_now, rainfall)
-    labels_df.to_csv(path.join(label_dir, config["davis_log_filename"]), index=False)
+    save_csv(data)
 
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(interrupt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(interrupt_pin, GPIO.IN, pull_up_down=GPIO.PUD_OFF)
 GPIO.add_event_detect(interrupt_pin, GPIO.RISING, callback=bucket_tipped, bouncetime=50)
 
 try:
+    log_count = 1
     while True:
         dt_now = datetime.now()
         elapsed_time = dt_now - dt_start
         if elapsed_time.seconds % logging_interval == 0:
             if log_count == 0:
-                saving_data(label_dir, dt_now)
-                reset_rainfall()
+                calculate_rainfall(dt_now)
+                reset_count()
                 log_count = 1
         else:
             log_count = 0
