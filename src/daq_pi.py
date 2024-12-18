@@ -73,7 +73,6 @@ def main():
     config = load_config("config.yaml")
     db_counter, rain = 0, 0
     DB_write_interval = config["DB_writing_interval_min"]
-    result_data = []
     num_subsamples = config["infer_inetrval_sec"] // config["sample_duration_sec"]
     record_hours = config["record_hours"]
     field_deployed = config["field_deployed"]
@@ -82,9 +81,11 @@ def main():
     moisture_threshold = config["moisture_threshold"]
     infer_model_path = path.join(config["infer_model_dir"],config["infer_model_name"])
     infer_model = load_estimate_model(infer_model_path)
-    locations = []
     # serial commuication setup for battery monitoring
     ser = setup_serial_connection(config["uart_port"], config["baudrate"])
+    locations = []
+    result_data = []
+    
 
     try:
         if field_deployed:
