@@ -117,8 +117,36 @@ The line #!/usr/bin/env python3 is called a shebang. It tells the system which i
 
 PROBLEMS
 * The error logging file is occasionally being overwritten.
-* Standard output is not being written to raingauge_output.log.
+* Standard output is not being written to redirecting log file raingauge_output.log.
 * Default log storage in /var/log/* could consume significant memory; avoid restarting the script on failure to prevent excessive logging.
 * If logs fill up the memory, determine how to delete them or automatically limit the log file size.
-* all the setup is working in my pc ,but not working in pi,there is some errors with audio recording
+* there is no issues with running simple python script but audio recording
+using arecord is not taking place.
 
+SOLUTIONS SUGGESTED  
+* 1.Ensure Synchronous Execution  #NOT WORKNNG
+
+In your record_audio function, the subprocess.call() should already make the script wait for arecord to finish. However, if the script seems to run asynchronously or the service doesn't wait for the process, ensure that arecord is being run synchronously by modifying the call:
+import subprocess
+
+```bash
+def record_audio(file_path, duration, file_format, resolution, sampling_rate):
+    result = subprocess.call(
+        [
+            "arecord",
+            "-q",
+            "--duration=" + str(duration),
+            "-t",
+            str(file_format),
+            "-f",
+            str(resolution),
+            "-r",
+            sampling_rate,
+            file_path,
+        ]
+    )
+    if result != 0:
+        print("Error during recording.")
+```
+
+By calling subprocess.call(), the script will indeed wait for arecord to complete before moving on to the next recording. However, check that arecord itself does not fork or run in the background, as that might still cause issues.
