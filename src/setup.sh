@@ -190,19 +190,25 @@ install_zerotier(){
     fi
 }
 
-install_wiringpi(){
-# This library provides GPIO interface for raspberry pi- RFM95 communication
+setup_lora()
+{
+# wiringpi library provides GPIO interface for raspberry pi- RFM95 communication
 git clone https://github.com/WiringPi/WiringPi.git
 cd WiringPi
 ./build 
+# compiling lora code
+cd ~/raingauge/src/lmic_rpi/examples/ttn-abp-send 
+make
+# ading path to system variables
+sed -i '$a export PATH="$PATH:/home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send"' ~/.bashrc
+source ~/.bashrc
 }
-
 
 auto_login
 create_environment
 install_dependencies
 install_zerotier
-install_wiringpi
+setup_lora
 print_centered_message "REBOOTING DEVICE"
 sudo reboot
 

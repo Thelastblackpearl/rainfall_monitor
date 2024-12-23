@@ -62,8 +62,7 @@ arecord -l
 ```bash
 sudo reboot
 ```
-
-### 8. After rebooting check if $arecord$ command is working
+* After rebooting check if $arecord$ command is working
 ```bash
 # Records a 5 second test audio as wav file
 arecord --duration=5 sample.wav
@@ -71,14 +70,14 @@ arecord --duration=5 sample.wav
 # Delete the test file
 rm sample.wav
 ```
-### 9. Enable I2C (for moisture sensor),UART (for battery monitoring) communication and Reboot
+### 8. Enable I2C (for moisture sensor),UART (for battery monitoring) communication and Reboot
 ```bash
 sudo raspi-config
 # interfacing options >> I2C >> yes
 # interfacing options >> serial port >> no >> yes
 sudo reboot
 ```
-### 10. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
+### 9. Connect and Setup ADS1115 ADC Module and Grove moisture sensor to Raspberry Pi 4
 
 #### Hardware mapping 
 
@@ -95,7 +94,7 @@ sudo reboot
 ```bash
 i2cdetect -y 1
 ```
-### 11. Connect and setup battery monitoring
+### 10. Connect and setup battery monitoring
 #### Hardware mapping
 
 * optocoupler connection diagram can be seen [here](https://github.com/cksajil/rainfall_monitor/blob/gitlab/docs/images/optocupler%20conectin.png)
@@ -109,7 +108,7 @@ i2cdetect -y 1
 | 39 (GND) via 470ohm R | 3           |                          |
 | 1 (3.3v)              | 4           |                          |
    
-### 12. Connect and Setup RFM95 Module to Raspberry Pi 4
+### 11. Connect and Setup RFM95 Module to Raspberry Pi 4
 #### Hardware mapping 
 
 The complete WiringPi pin mapping can be seen [here](https://raw.githubusercontent.com/cksajil/rainfall_monitor/gitlab/src/lmic_rpi/raspberry_pi_wiring_gpio_pins.png) 
@@ -127,34 +126,10 @@ The complete WiringPi pin mapping can be seen [here](https://raw.githubuserconte
 | GND          | GND             | 39              |
 | 3.3V         | +3.3V           | 1               |
 
-#### Compile [LoraWANPi](https://github.com/lucasmaziero/lmic-rpi-fox.git) 
-
-```bash
-# Access the lmic_rpi folder 
-$ cd /home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send 
-
-# Make the project 
-# This will generate the executable for LoraWAN communication
-$ make 
-
-# Add the executable to system path
-$ nano ~/.bashrc
-
-# Appened the following line to the end of .bashrc file 
-$ export PATH="$PATH:/home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send"
-
-# to avoid rebooting after change
-$ source ~/.bashrc
-
-# Usage
-# LED flag (0/1) can be used as an indication for data sending
-$ ttn-abp-send <DevAddr> <Nwkskey> <Appskey> <Rain_mm> <solar_V> <battery_V> <solar_I> <battery_I> <LED_FLAG>
-```
-
-### 13. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
+### 12. Add influx-db yaml file (`influxdb_api.yaml`) or LoraWAN keys yaml file (`lorawan_keys.yaml`) to config folder
 Download these from `API_Keys` folder in `SWSICFOSS`  Google Drive. 
 
-### 14. Edit device details in config file
+### 13. Edit device details in config file
 ```bash
 # open config.yaml
 nano /home/pi/raingauge/src/config/config.yaml
@@ -172,18 +147,15 @@ eg:
 eg:
     field_deployed: false
 ```
-### 15. Setup the python script run automatically after booting 
+### 14. Setup the python script run automatically after booting 
 
 you can do this in many ways
 * Using bashrc
 * Running the script as service
  
 ```bash
-#Add Python scripts to bashrc file 
-nano ~/.bashrc
-
-# Appened the following line to the end of .bashrc file 
-python3 /home/pi/raingauge/src/daq_pi.py
+# Append Python script execution command to .bashrc file 
+echo "python3 /home/pi/raingauge/src/daq_pi.py" >> ~/.bashrc
 
 # Reboot the device
 sudo reboot

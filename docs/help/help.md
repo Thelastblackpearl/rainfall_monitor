@@ -68,8 +68,31 @@ $ cd WiringPi
 # Build the library
 $ ./build 
 ```
+### 2. Compile [LoraWANPi](https://github.com/lucasmaziero/lmic-rpi-fox.git) 
 
-### 2. Add device to zerotier
+```bash
+# Access the lmic_rpi folder 
+$ cd /home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send 
+
+# Make the project 
+# This will generate the executable for LoraWAN communication
+$ make 
+
+# Add the executable to system path
+$ nano ~/.bashrc
+
+# Appened the following line to the end of .bashrc file 
+$ export PATH="$PATH:/home/pi/raingauge/src/lmic_rpi/examples/ttn-abp-send"
+
+# to avoid rebooting after change
+$ source ~/.bashrc
+
+# Usage
+# LED flag (0/1) can be used as an indication for data sending
+$ ttn-abp-send <DevAddr> <Nwkskey> <Appskey> <Rain_mm> <solar_V> <battery_V> <solar_I> <battery_I> <LED_FLAG>
+```
+
+### 3. Add device to zerotier
 Follow the instructions on [Zerotier for Raspberry Pi Tutorial](https://pimylifeup.com/raspberry-pi-zerotier/). Go to  [Zerotier](https://my.zerotier.com/) platform and login with the credentials shared via email/open project to monitor/connect to device IPs. 
 
 ## RUN A SCRIPT ON STARTUP IN LINUX
