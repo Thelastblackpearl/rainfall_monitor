@@ -64,7 +64,7 @@ def preprocess_dataframe(ser):
 
 
 if __name__ == "__main__":
-    port = "/dev/ttyS0"  # Adjust to your port
+    port = "/dev/ttyS0"  # Adjust to your port # stands for /dev/serial0
     baudrate = 9600
     ser = setup_serial_connection(port, baudrate)
 
