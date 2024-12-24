@@ -73,10 +73,7 @@ def main():
     config = load_config("config.yaml")
     db_counter, rain = 0, 0
     DB_write_interval = config["DB_writing_interval_min"]
-    result_data = []
-    wav_duration = config["sample_duration_sec"]
-    infer_inetrval = config["infer_inetrval_sec"]
-    num_subsamples = infer_inetrval // wav_duration
+    num_subsamples = config["infer_inetrval_sec"] // config["sample_duration_sec"]
     record_hours = config["record_hours"]
     field_deployed = config["field_deployed"]
     end_time = datetime.now() + timedelta(hours=record_hours)
@@ -84,11 +81,11 @@ def main():
     moisture_threshold = config["moisture_threshold"]
     infer_model_path = path.join(config["infer_model_dir"],config["infer_model_name"])
     infer_model = load_estimate_model(infer_model_path)
-    locations = []
     # serial commuication setup for battery monitoring
-    port = config["uart_port"]
-    baudrate = config["baudrate"]
-    ser = setup_serial_connection(port, baudrate)
+    ser = setup_serial_connection(config["uart_port"], config["baudrate"])
+    locations = []
+    result_data = []
+    
 
     try:
         if field_deployed:
@@ -100,7 +97,7 @@ def main():
                 location = path.join(config["data_dir"], audio_fname)
                 record_audio(
                     location,
-                    wav_duration,
+                    config["sample_duration_sec"],
                     config["file_format"],
                     config["resolution"],
                     config["sampling_rate"],
@@ -145,16 +142,16 @@ def main():
                 config["log_dir"],
                 config["audio_log_filename"],
                 datetime.now(),
-                int(record_hours * (3600 / wav_duration)),
+                int(record_hours * (3600 / config["sample_duration_sec"])),
             )
-            for i in range(1, int(record_hours * (3600 / wav_duration)) + 1):
+            for i in range(1, int(record_hours * (3600 / config["sample_duration_sec"])) + 1):
                 dt_now = datetime.now()
                 logger.info(f"Recording sample number {i} on {dt_now}")
                 audio_fname = time_stamp_fnamer(dt_now) + ".wav"
                 location = path.join(config["data_dir"], audio_fname)
                 record_audio(
                     location,
-                    wav_duration,
+                   config["sample_duration_sec"],
                     config["file_format"],
                     config["resolution"],
                     config["sampling_rate"],
