@@ -53,8 +53,7 @@ print_centered_message() {
 }
 
 auto_login(){
-    # enabling auto login service
-    username="pi"    
+    # enabling auto login service 
     sudo chmod 777 /etc/systemd/logind.conf
     echo "#  This file is part of systemd.
     #
@@ -105,7 +104,7 @@ auto_login(){
     sudo chmod 777 /etc/systemd/system/getty@tty1.service.d/
     echo "[Service]
     ExecStart=
-    ExecStart=-/sbin/agetty --noissue --autologin $username %I \$TERM
+    ExecStart=-/sbin/agetty --noissue --autologin $USER %I \$TERM
     Type=idle" > /etc/systemd/system/getty@tty1.service.d/override.conf
     print_centered_message "AUTO LOGIN SETUP COMPLETED"
     progress_bar 20
