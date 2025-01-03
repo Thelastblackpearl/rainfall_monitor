@@ -1,21 +1,16 @@
-import os
 import yaml
-from os import remove
-from os.path import exists
+from os import path,makedirs,remove
 
 
-def load_config(config_name: str, CONFIG_PATH="/home/pi/raingauge/src/config") -> dict:
+def load_config(config_name: str) -> dict:
     """
-    A function to load and return config file in YAML format
+    A function to load and return config file in YAML format.
+    assuming relative path of config
     """
-    with open(os.path.join(CONFIG_PATH, config_name)) as file:
+    config_path = path.join(path.dirname(path.dirname(path.abspath(__file__))),"config")
+    with open(path.join(config_path, config_name)) as file:
         config = yaml.safe_load(file)
     return config
-
-
-# loading config files
-config = load_config("config.yaml")
-
 
 def time_stamp_fnamer(tstamp) -> str:
     """
@@ -33,17 +28,23 @@ def create_folder(directory: str) -> None:
     """
     Function to create a folder in a location if it does not exist
     """
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not path.exists(directory):
+        makedirs(directory)
 
 def delete_files(file_paths):
-    """Function to delete wav files after inference"""
+    """
+    Function to delete wav files after inference
+    """
     for file_path in file_paths:
         try:
-            if exists(file_path):
+            if path.exists(file_path):
                 remove(file_path)
                 print(f"Deleted: {file_path}")
             else:
                 print(f"File does not exist: {file_path}")
         except Exception as e:
             print(f"Error deleting {file_path}: {e}")
+
+
+# loading config files
+config = load_config("config.yaml")
